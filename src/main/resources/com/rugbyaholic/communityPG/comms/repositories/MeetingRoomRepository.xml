@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+    "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.rugbyaholic.communityPG.comms.repositories.MeetingRoomRepository">
+
+	<select id="currentRating" resultType="int">
+	<![CDATA[
+		SELECT  RATING_FLG
+		FROM    POST_RATINGS
+		WHERE   TOPICNO      =  #{topicNo}
+		AND     POSTNO       =  #{postNo}
+		AND     RATEDBY      =  #{user.empNo}
+	]]>
+	</select>
+
+	<insert id="updateRating">
+	<![CDATA[
+		INSERT INTO POST_RATINGS
+		(
+		    TOPICNO,
+		    POSTNO,
+		    RATEDBY,
+		    RATING_FLG,
+		    RATEDAT
+		) VALUES (
+		    #{topicNo},
+		    #{postNo},
+		    #{user.empNo},
+		    #{rating},
+		    CURDATE()
+		) ON DUPLICATE KEY UPDATE
+		    RATING_FLG       =  #{rating},
+		    RATEDAT          =  CURDATE()
+	]]>
+	</insert>
+
+	<select id="findTopic" resultMap="Topics">
+	<![CDATA[
+		SELECT  TOPICS.TOPICNO              AS topicNo,
+		        TOPICS.SUBJECT              AS subject,
+		        TOPICS.CREATEDBY            AS topicCreatedBy,
+		        TOPICS.CREATEDAT            AS topicCreatedAt,
+		        POSTS.POSTNO                AS postNo,
+		        POSTS.POST                  AS postText,
+		        POSTS.CREATEDBY             AS postCreatedBy,
+		        U.NAME                      AS postCreatedUsername,
+		        U.PROFILE_IMG               AS postCreatedUserImage,
+		        POSTS.CREATEDAT             AS postCreatedAt,
+		        POST_RATINGS.RATEDBY        AS postRatedBy,
+		        POST_RATINGS.RATING_FLG     AS postRating,
+		        POST_RATINGS.RATEDAT        AS postRatedAt
+		FROM    TOPICS
+		INNER JOIN POSTS
+		ON      TOPICS.TOPICNO   =  POSTS.TOPICNO
+		INNER JOIN USERS U
+		ON      U.EMP_NO         =  POSTS.CREATEDBY
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    USERS
+		            WHERE   EMP_NO   =  POSTS.CREATEDBY
+		            AND     AVF     <=  CURDATE()
+		            AND     AVF      >  U.AVF
+		        )
+		LEFT OUTER JOIN POST_RATINGS
+		ON      POSTS.TOPICNO    =  POST_RATINGS.TOPICNO
+		AND     POSTS.POSTNO     =  POST_RATINGS.POSTNO
+		WHERE   U.AVF           <=  CURDATE()
+		AND     TOPICS.TOPICNO   =  #{topicNo}
+		ORDER BY
+		        TOPICS.TOPICNO,
+		        POSTS.POSTNO
+	]]>
+	</select>
+
+	<select id="searchAllTopics" resultMap="Topics">
+	<![CDATA[
+		SELECT  TOPICS.TOPICNO              AS topicNo,
+		        TOPICS.SUBJECT              AS subject,
+		        TOPICS.CREATEDBY            AS topicCreatedBy,
+		        TOPICS.CREATEDAT            AS topicCreatedAt,
+		        POSTS.POSTNO                AS postNo,
+		        POSTS.POST                  AS postText,
+		        POSTS.CREATEDBY             AS postCreatedBy,
+		        U.NAME                      AS postCreatedUsername,
+		        U.PROFILE_IMG               AS postCreatedUserImage,
+		        POSTS.CREATEDAT             AS postCreatedAt,
+		        POST_RATINGS.RATEDBY        AS postRatedBy,
+		        POST_RATINGS.RATING_FLG     AS postRating,
+		        POST_RATINGS.RATEDAT        AS postRatedAt
+		FROM    TOPICS
+		INNER JOIN POSTS
+		ON      TOPICS.TOPICNO   =  POSTS.TOPICNO
+		INNER JOIN USERS U
+		ON      U.EMP_NO         =  POSTS.CREATEDBY
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    USERS
+		            WHERE   EMP_NO   =  POSTS.CREATEDBY
+		            AND     AVF     <=  CURDATE()
+		            AND     AVF      >  U.AVF
+		        )
+		LEFT OUTER JOIN POST_RATINGS
+		ON      POSTS.TOPICNO    =  POST_RATINGS.TOPICNO
+		AND     POSTS.POSTNO     =  POST_RATINGS.POSTNO
+		WHERE   U.AVF           <=  CURDATE()
+		ORDER BY
+		        TOPICS.TOPICNO,
+		        POSTS.POSTNO
+	]]>
+	</select>
+
+	<resultMap type="com.rugbyaholic.communityPG.comms.Topic"
+		id="Topics">
+		<result property="topicNo" column="topicNo" />
+		<result property="subject" column="subject" />
+		<result property="createdAt" column="topicCreatedAt" />
+		<association property="owner"
+			javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+			<result property="empNo" column="topicCreatedBy" />
+		</association>
+		<collection property="posts"
+			ofType="com.rugbyaholic.communityPG.comms.Post">
+			<result property="postNo" column="postNo" />
+			<result property="postText" column="postText" />
+			<result property="postedAt" column="postCreatedAt" />
+			<association property="author"
+				javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+				<result property="empNo" column="postCreatedBy" />
+				<result property="username" column="postCreatedUsername" />
+				<association property="profileImage"
+					javaType="com.rugbyaholic.communityPG.common.ImageFile">
+					<result property="encodedString"
+						column="postCreatedUserImage" />
+				</association>
+			</association>
+			<collection property="ratings"
+				ofType="com.rugbyaholic.communityPG.comms.PostRating">
+				<result property="rating" column="postRating" />
+				<result property="ratedAt" column="postRatedAt" />
+				<association property="rater"
+					javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+					<result property="empNo" column="postRatedBy" />
+				</association>
+			</collection>
+		</collection>
+	</resultMap>
+
+	<insert id="registerTopic">
+	<![CDATA[
+		INSERT INTO TOPICS(
+		    TOPICNO,
+		    SUBJECT,
+		    CREATEDBY,
+		    CREATEDAT
+		) VALUES (
+		    #{form.topicNo},
+		    #{form.subject},
+		    #{user.empNo},
+		    CURDATE()
+		)
+	]]>
+	</insert>
+
+	<insert id="registerPost">
+	<![CDATA[
+		INSERT INTO POSTS(
+		    TOPICNO,
+		    POSTNO,
+		    POST,
+		    CREATEDBY,
+		    CREATEDAT
+		) VALUES (
+		    #{form.topicNo},
+		    (
+        		SELECT  TMP.NEXT_POST_NO
+        		FROM    
+        		(
+		            SELECT  COALESCE(MAX(POSTNO), 0) + 1 AS NEXT_POST_NO
+		            FROM    POSTS
+		            WHERE   TOPICNO      =  #{form.topicNo}
+		        ) TMP
+		    ),
+		    #{form.primaryPost},
+		    #{user.empNo},
+		    CURDATE()
+		)
+	]]>
+	</insert>
+
+</mapper>

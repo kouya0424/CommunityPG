@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>トップ</title>
+</head>
+<body>
+	<div class="cover"></div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
+	<div class="main d-flex flex-column">
+		<div th:replace="fragments/Header :: header"></div>
+		<div class="container-fluid p-3 position-relative">
+			<div class="row g-3">
+				<div class="col col-12">
+					<img th:src="@{/img/constr1.gif}" alt="" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/Toast :: toast"></div>
+</body>
+</html>

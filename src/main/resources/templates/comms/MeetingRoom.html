@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/component.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>電子会議室</title>
+</head>
+<body>
+	<div class="cover"></div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
+	<div class="main d-flex flex-column">
+		<div th:replace="fragments/Header :: header"></div>
+		<div class="container-fluid py-3" th:with="user=${#authentication.principal}">
+			<!-- トピック新規登録 -->
+			<div class="d-flex justify-content-end">
+				<button class="btn btn-secondary btn-sm shadow-sm" data-bs-toggle="collapse"
+						data-bs-target="#topicCreation">
+						<span>トピック作成フォームを表示</span>
+						<span class="d-none">トピック作成フォームを隠す</span>
+				</button>
+			</div>
+			<div id="topicCreation" class="collapse mt-3" th:object="${topicCreationForm}"
+				th:classappend="${topicCreationForm.isError ? 'show' : ''}">
+				<form th:action="@{/comms/CreateTopic.do}" method="POST"
+					class="border px-3 bg-light" autocomplete="off">
+					<h5 class="my-3">トピック作成フォーム</h5>
+					<div class="my-3">
+						<label for="subject">トピックタイトル</label>
+						<input type="text" class="form-control form-control-sm" style="width: 24rem;" 
+							th:field="*{subject}" id="subject" />
+						<div th:if="${#fields.hasErrors('subject')}">
+							<span class="text-danger" th:errors="*{subject}"></span>
+						</div>
+					</div>
+					<div class="my-3">
+						<label for="primaryPost">投稿内容</label>
+						<textarea id="primaryPost" th:field="*{primaryPost}" class="form-control form-control-sm" style="resize: none;"></textarea>
+						<div th:if="${#fields.hasErrors('primaryPost')}">
+							<span class="text-danger" th:errors="*{primaryPost}"></span>
+						</div>
+					</div>
+					<div class="my-3 text-end">
+						<button class="btn btn-success btn-sm shadow-sm">トピック作成</button>
+					</div>
+				</form>
+			</div>
+			<!-- トピック情報 -->
+			<div th:each="topic : ${topics}">
+				<div th:id="${topic.topicNo}" class="mt-3 p-3 bg-light border">
+					<div th:replace="fragments/Topic :: topic(${topic})"></div>
+				</div>
+			</div>
+			<script type="text/javascript">
+			$(function() {
+				$(document).ajaxSend(function(e, xhr, options) {
+					let token = $("meta[name='_csrf']").attr("content");
+					let header = $("meta[name='_csrf_header']").attr("content");
+					xhr.setRequestHeader(header, token);
+				});
+				$(document).on('click', '#ajaxForm button', function() {
+					let ajaxForm = $(this).parents("#ajaxForm");
+					let paramTopicNo = ajaxForm.find('#topicNo').val();
+					let paramSubject = ajaxForm.find('#subject').val();
+					let paramPostText = ajaxForm.find('#postText').val();
+					$.ajax({
+						type: ajaxForm.attr('method'),
+						url: ajaxForm.attr('action'),
+						dataType: 'html',
+						data: {
+							topicNo: paramTopicNo,
+							subject: paramSubject,
+							primaryPost: paramPostText
+						}
+					}).done((data) => {
+						let targetId = '#' + paramTopicNo;
+						$(targetId).html(data);
+					});
+				});
+				$(document).on('click', 'button.ajax-link', function() {
+					let parent = $(this).parents('#ratingForm');
+					let paramTopicNo = parent.find('input[name="topicNo"]').val();
+					let paramPostNo = parent.find('input[name="postNo"]').val();
+					let paramRating = $(this).data('ts-param');
+					$.ajax({
+						type: parent.attr('method'),
+						url: parent.attr('action'),
+						dataType: 'html',
+						data: {
+							topicNo: paramTopicNo,
+							postNo: paramPostNo,
+							rating: paramRating
+						}
+					}).done((data) => {
+						let targetId = '#' + paramTopicNo;
+						$(targetId).html(data);
+					});
+				});
+				$(document).on('click', '#postEdit', function() {
+					let target = $(this).data('ts-target');
+					let postText = $(this).parents('#ratingForm').find('textarea[name="postText"]');
+					$(target).toggleClass('d-none');
+					postText.toggleClass('readonly').toggleClass('p-0');
+					if (postText.attr('readonly')) {
+						postText.removeAttr('readonly');
+					} else {
+						postText.attr('readonly', 'readonly');
+					}
+				});
+			});
+			</script>
+		</div>		
+	</div>
+	<div th:replace="fragments/Toast :: toast"></div>
+</body>
+</html>
