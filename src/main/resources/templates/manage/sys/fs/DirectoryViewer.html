@@ -84,17 +84,23 @@
 			</div>
 			<div class="row flex-grow-1 py-1 border-top my-2">
 				<div class="col col-12">
-					<div class="py-1" th:if="${parentAvailable}" th:with="parent=${currentDirectory.parentFile}">
-						<a th:href="@{/manage/sys/fs/ChangeDirectory.do(to=${parent.absolutePath})}">戻る</a>
+					<div class="py-1" th:if="${parentAvailable}" th:with="parent=${currentDirectory.parentFile}" title="戻る">
+						<a th:href="@{/manage/sys/fs/ChangeDirectory.do(to=${parent.absolutePath})}">
+							<i class="bi bi-arrow-return-left"></i>
+						</a>
 					</div>
 					<div th:each="file : ${currentDirectory.listFiles}" class="py-1">
 						<div th:if="${file.directory}">
-							<a th:href="@{/manage/sys/fs/ChangeDirectory.do(to=${file.absolutePath})}"
-								th:text="${file.name}"></a>
+							<a th:href="@{/manage/sys/fs/ChangeDirectory.do(to=${file.absolutePath})}">
+								<i class="bi bi-folder-fill"></i>
+								<span th:text="${file.name}"></span>
+							</a>
 						</div>
 						<div th:if="${file.file}">
-							<a th:href="@{/manage/sys/fs/Download.do(target=${file.absolutePath})}"
-								th:text="${file.name}" class="link-success"></a>
+							<a th:href="@{/manage/sys/fs/Download.do(target=${file.absolutePath})}" class="link-success">
+								<i class="bi bi-file-earmark-text"></i>
+								<span th:text="${file.name}"></span>
+							</a>
 						</div>
 					</div>
 				</div>

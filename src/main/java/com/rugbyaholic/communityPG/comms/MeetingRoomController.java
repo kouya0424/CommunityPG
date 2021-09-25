@@ -75,6 +75,31 @@ public class MeetingRoomController {
 		return "fragments/Topic :: topic";
 	}
 
+	// 投稿編集
+	@PostMapping("/comms/EditPost.do")
+	public String onEditPostRequested(@RequestParam("postText") String postText,
+				@RequestParam("topicNo") String topicNo, @RequestParam("postNo") int postNo, Model model) {
+		service.editPost(postText, topicNo, postNo);
+		model.addAttribute("topic", service.reloadTopic(topicNo));
+		return "fragments/Topic :: topic";
+	}
+
+	// 投稿削除
+	@PostMapping("/comms/DeletePost.do")
+	public String onDeletePostRequested(@RequestParam("topicNo") String topicNo,
+				@RequestParam("postNo") int postNo, Model model) {
+		service.deletePost(topicNo, postNo);
+		model.addAttribute("topic", service.reloadTopic(topicNo));
+		return "fragments/Topic :: topic";
+	}
+	
+	// TOPIC削除
+	@PostMapping("/comms/deleteTopic.do")
+	public String onDeleteTopicRequested(@RequestParam("topicNo") String topicNo, Model model) {
+		service.deleteTopic(topicNo);
+		return  "redirect:/comms/MeetingRoom.html";
+	}
+	
 	// 投稿評価
 	@PostMapping("/comms/PostRating.do")
 	public String onPostRatingRequested(@RequestParam("topicNo") String topicNo, @RequestParam("postNo") int postNo,
@@ -83,4 +108,5 @@ public class MeetingRoomController {
 		model.addAttribute("topic", service.reloadTopic(topicNo));
 		return "fragments/Topic :: topic";
 	}
+
 }

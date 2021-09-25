@@ -26,6 +26,9 @@ class UserManagementServiceTest {
 	@Mock
 	private UserRepository userRepository;
 	
+	@Mock
+	private AuthenticatedUser user;
+	
 	@InjectMocks
 	private UserManagementService service;
 	
@@ -47,7 +50,7 @@ class UserManagementServiceTest {
 		Mockito.when(userRepository.findUserById(ArgumentMatchers.anyLong()))
 			.thenReturn(Optional.of(new AuthenticatedUser()));
 		
-		UserRegistrationForm actual = service.initializeRegistrationForm(0l);
+		UserRegistrationForm actual = service.initializeRegistrationForm(0l, user);
 		
 		assertThat(actual.getDeptOptions()).hasSize(1)
 			.extracting(Option::getCode, Option::getName)

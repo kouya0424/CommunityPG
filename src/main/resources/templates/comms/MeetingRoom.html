@@ -58,13 +58,17 @@
 					<div th:replace="fragments/Topic :: topic(${topic})"></div>
 				</div>
 			</div>
+			
 			<script type="text/javascript">
+			
 			$(function() {
+				
 				$(document).ajaxSend(function(e, xhr, options) {
 					let token = $("meta[name='_csrf']").attr("content");
 					let header = $("meta[name='_csrf_header']").attr("content");
 					xhr.setRequestHeader(header, token);
 				});
+				
 				$(document).on('click', '#ajaxForm button', function() {
 					let ajaxForm = $(this).parents("#ajaxForm");
 					let paramTopicNo = ajaxForm.find('#topicNo').val();
@@ -84,6 +88,7 @@
 						$(targetId).html(data);
 					});
 				});
+				
 				$(document).on('click', 'button.ajax-link', function() {
 					let parent = $(this).parents('#ratingForm');
 					let paramTopicNo = parent.find('input[name="topicNo"]').val();
@@ -103,6 +108,7 @@
 						$(targetId).html(data);
 					});
 				});
+				
 				$(document).on('click', '#postEdit', function() {
 					let target = $(this).data('ts-target');
 					let postText = $(this).parents('#ratingForm').find('textarea[name="postText"]');
@@ -114,7 +120,72 @@
 						postText.attr('readonly', 'readonly');
 					}
 				});
+				
+				$(document).on('click', '#textEdit', function() {
+					let parent = $(this).parents('#ratingForm');
+					let paramPostText = parent.find('#postText').val();
+					let paramTopicNo = parent.find('input[name="topicNo"]').val();
+					let paramPostNo = parent.find('input[name="postNo"]').val();
+					$.ajax({
+						type: parent.attr('method'),
+						url: '/comms/EditPost.do',
+						dataType: 'html',
+						data: {
+							postText: paramPostText,
+							topicNo: paramTopicNo,
+							postNo: paramPostNo
+						}
+					}).done((data) => {
+						let targetId = '#' + paramTopicNo;
+						$(targetId).html(data);
+					});
+				});
+				
+				$(document).on('click', '#textDelete', function() {
+				    if(!confirm('本当にこの投稿を削除しますか？')){
+				        return false;
+				    }else{
+						let parent = $(this).parents('#ratingForm');
+						let paramPostText = parent.find('#postText').val();
+						let paramTopicNo = parent.find('input[name="topicNo"]').val();
+						let paramPostNo = parent.find('input[name="postNo"]').val();
+						$.ajax({
+							type: parent.attr('method'),
+							url: '/comms/DeletePost.do',
+							dataType: 'html',
+							data: {
+								topicNo: paramTopicNo,
+								postNo: paramPostNo
+							}
+						}).done((data) => {
+							let targetId = '#' + paramTopicNo;
+							$(targetId).html(data);
+						});
+				    }
+				});
+				
+				$(document).on('click', '#deleteForm button', function() {
+				    if(!confirm('本当にこのトピックを削除しますか？')){
+				        return false;
+				    }else{
+						let parent = $(this).parents('#deleteForm');
+						let paramTopicNo = parent.find('input[name="topicNo"]').val();
+						$.ajax({
+							type: parent.attr('method'),
+							url: parent.attr('action'),
+							dataType: 'html',
+							data: {
+								topicNo: paramTopicNo,
+							}
+						}).done((data) => {
+							let targetId = '#' + paramTopicNo;
+							$(targetId).html(data);
+						});
+				    }
+				});
+				
 			});
+			
 			</script>
 		</div>		
 	</div>

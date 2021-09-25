@@ -3,17 +3,15 @@
     "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.rugbyaholic.communityPG.common.repositories.UserRepository">
+<mapper namespace="com.rugbyaholic.communityPG.common.repositories.UserRepository">
 
 	<delete id="depriveAuthority">
 	<![CDATA[
 		DELETE FROM USER_ROLES WHERE USER_ID = #{user.id} AND ROLE = #{role}
 	]]>
 	</delete>
-
-	<insert id="registerUser" useGeneratedKeys="true"
-		keyProperty="user.id">
+	
+	<insert id="registerUser" useGeneratedKeys="true" keyProperty="user.id">
 	<![CDATA[
 		INSERT INTO USERS (
 		    EMAIL,
@@ -45,8 +43,7 @@
 	]]>
 	</insert>
 
-	<select id="findUserById" parameterType="java.lang.Long"
-		resultMap="userDetails">
+	<select id="findUserById" parameterType="java.lang.Long" resultMap="userDetails">
 	<![CDATA[
 		SELECT 	USERS.ID,
 				USERS.EMAIL,
@@ -93,9 +90,8 @@
 	]]>
 	</select>
 
-	<select id="countUser"
-		parameterType="com.rugbyaholic.communityPG.manage.users.UserSearchForm"
-		resultType="int">
+	<select id="countUser" parameterType="com.rugbyaholic.communityPG.manage.users.UserSearchForm"
+			resultType="int">
 	<![CDATA[
 		SELECT  COUNT(*)
 		FROM    USERS U
@@ -122,33 +118,32 @@
 		            AND     AVF          >  POS.AVF
 		        )	
 	]]>
-		<where>
-			<if test="empNo != null">
+	<where>
+		<if test="empNo != null">
 		<![CDATA[
-			AND    U.EMP_NO     =  #{empNo}
+			AND    U.EMP_NO		LIKE	CONCAT('%', #{empNo}, '%')
 		]]>
-			</if>
-			<if test="name != null">
+		</if>
+		<if test="name != null">
 		<![CDATA[
-			AND    U.NAME       =  #{name}
+			AND    U.NAME		LIKE	CONCAT('%', #{name}, '%')
 		]]>
-			</if>
-			<if test="deptCd != null">
+		</if>
+		<if test="deptCd != null">
 		<![CDATA[
 			AND    U.DEPT_CD    =  #{deptCd}
 		]]>
-			</if>
-			<if test="posCd != null">
+		</if>
+		<if test="posCd != null">
 		<![CDATA[
 			AND    U.POS_CD     =  #{posCd}
 		]]>
-			</if>
-		</where>
+		</if>
+	</where>
 	</select>
-
-	<select id="createProfileEditForm"
-		parameterType="java.lang.Long"
-		resultType="com.rugbyaholic.communityPG.auth.account.ProfileEditForm">
+	
+	<select id="createProfileEditForm" parameterType="java.lang.Long" 
+			resultType="com.rugbyaholic.communityPG.auth.account.ProfileEditForm">
 	<![CDATA[
 		SELECT  ZIPCODE         AS zipcode,
 		        PREF            AS pref,
@@ -161,9 +156,8 @@
 		WHERE   USER_ID      =  #{userId}
 	]]>
 	</select>
-
-	<select id="identifyUser" parameterType="java.lang.String"
-		resultMap="userDetails">
+	
+	<select id="identifyUser" parameterType="java.lang.String" resultMap="userDetails">
 	<![CDATA[
 		SELECT 	USERS.ID,
 				USERS.EMAIL,
@@ -220,12 +214,10 @@
 		        )
 		WHERE  USERS.EMAIL       = #{email}
 		AND    RC.RN             = 1
-	]]>
+	]]>	
 	</select>
-
-	<resultMap
-		type="com.rugbyaholic.communityPG.auth.AuthenticatedUser"
-		id="userDetails">
+	
+	<resultMap type="com.rugbyaholic.communityPG.auth.AuthenticatedUser" id="userDetails">
 		<result property="id" column="ID" />
 		<result property="email" column="EMAIL" />
 		<result property="avf" column="AVF" />
@@ -233,26 +225,21 @@
 		<result property="password" column="PASSWORD" />
 		<result property="locked" column="LOCKED" />
 		<result property="expired" column="EXPIRED" />
-		<!-- AS 2020.02.04 VOL007 -->
-		<result property="deptCd" column="DEPT_CD" />
-		<result property="posCd" column="POS_CD" />
+		<result property="deptCd" column="DEPT_CD"/>
+		<result property="posCd" column="POS_CD"/>
 		<result property="empNo" column="EMP_NO" />
 		<result property="deptName" column="DEPT_NM" />
 		<result property="posName" column="POS_NM" />
-		<association property="profileImage"
-			javaType="com.rugbyaholic.communityPG.common.ImageFile">
+		<association property="profileImage" javaType="com.rugbyaholic.communityPG.common.ImageFile">
 			<result property="encodedString" column="PROFILE_IMG" />
 		</association>
-		<!-- AE 2020.02.04 VOL007 -->
-		<collection property="roles"
-			ofType="com.rugbyaholic.communityPG.common.Option">
-			<result property="code" column="ROLE" />
+		<collection property="roles" ofType="com.rugbyaholic.communityPG.common.Option">
+			<result property="code" column="ROLE"/>
 			<result property="name" column="CODE_NM" />
 		</collection>
 	</resultMap>
-
-	<update id="changeProfile"
-		parameterType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+	
+	<update id="changeProfile" parameterType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
 	<![CDATA[
 		UPDATE  USERS
 		SET     PASSWORD     =  #{password},
@@ -260,9 +247,8 @@
 		WHERE   ID           =  #{id}
 	]]>
 	</update>
-
-	<update id="updatePersonalInfo"
-		parameterType="com.rugbyaholic.communityPG.auth.account.ProfileEditForm">
+	
+	<update id="updatePersonalInfo" parameterType="com.rugbyaholic.communityPG.auth.account.ProfileEditForm">
 	<![CDATA[
 		INSERT INTO PERSONAL_INFO
 		(USER_ID, ZIPCODE, PREF, CITY, BLDG, TELNO, MOBILE_NO)
@@ -277,10 +263,9 @@
 		        MOBILE_NO    =  #{mobilePhoneNo}
 	]]>
 	</update>
-
-	<select id="loadUserList"
-		parameterType="com.rugbyaholic.communityPG.manage.users.UserSearchForm"
-		resultType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+	
+	<select id="loadUserList" parameterType="com.rugbyaholic.communityPG.manage.users.UserSearchForm"
+			resultType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
 	<![CDATA[
 		SELECT  U.ID                    AS id,
 				U.EMAIL                 AS email,
@@ -312,47 +297,46 @@
 		            AND     AVF          >  POS.AVF
 		        )
 	]]>
-		<where>
-			<if test="empNo != null">
+	<where>
+		<if test="empNo != null">
 		<![CDATA[
-			AND    U.EMP_NO     =  #{empNo}
+			AND    U.EMP_NO		LIKE	CONCAT('%', #{empNo}, '%')
 		]]>
-			</if>
-			<if test="name != null">
+		</if>
+		<if test="name != null">
 		<![CDATA[
-			AND    U.NAME       =  #{name}
+			AND    U.NAME		LIKE	CONCAT('%', #{name}, '%')
 		]]>
-			</if>
-			<if test="deptCd != null">
+		</if>
+		<if test="deptCd != null">
 		<![CDATA[
 			AND    U.DEPT_CD    =  #{deptCd}
 		]]>
-			</if>
-			<if test="posCd != null">
+		</if>
+		<if test="posCd != null">
 		<![CDATA[
 			AND    U.POS_CD     =  #{posCd}
 		]]>
-			</if>
-		</where>
+		</if>
+	</where>
 	<![CDATA[
 		ORDER BY U.DEPT_CD, U.EMP_NO
 		LIMIT  #{pageFrom}, #{count}
 	]]>
 	</select>
-
-	<insert id="registerInitialUser" useGeneratedKeys="true"
-		keyProperty="id">
+	
+	<insert id="registerInitialUser" useGeneratedKeys="true" keyProperty="id">
 	<![CDATA[
 		INSERT INTO USERS (EMAIL, AVF, NAME, PASSWORD, LOCKED, EXPIRED, EMP_NO, DEPT_CD, POS_CD, PROFILE_IMG)
 		VALUES (#{email}, CURDATE(), #{username}, #{password}, 0, 0, #{empNo}, '0000000', '0000', #{profileImage.encodedString})
 	]]>
 	</insert>
-
+	
 	<insert id="grantAuthority">
 	<![CDATA[
 		INSERT INTO USER_ROLES (USER_ID, ROLE, DELFLG)
 		VALUES (#{user.id}, #{role}, '0')
 	]]>
 	</insert>
-
+	
 </mapper>

@@ -17,13 +17,13 @@ import com.rugbyaholic.communityPG.auth.AuthenticatedUser;
 @MybatisTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class NumberingRepositoryTest {
-	
+
 	@Autowired
 	private NumberingRepository repository;
-	
+
 	@Mock
 	private AuthenticatedUser user;
-	
+
 	@BeforeEach
 	void setup() {
 		MockitoAnnotations.openMocks(this);
@@ -34,7 +34,7 @@ class NumberingRepositoryTest {
 		String issuedNumber = repository.issueNumber("E00", "2021");
 		assertEquals("0001", issuedNumber);
 	}
-	
+
 	@Test
 	void nextTest() {
 		Mockito.when(user.getId()).thenReturn(1l);

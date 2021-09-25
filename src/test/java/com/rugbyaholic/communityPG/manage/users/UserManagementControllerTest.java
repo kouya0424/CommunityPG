@@ -25,6 +25,9 @@ class UserManagementControllerTest {
 	@Mock
 	private UserManagementService service;
 	
+	@Mock
+	private AuthenticatedUser user;
+	
 	@InjectMocks
 	private UserManagementController controller;
 	
@@ -41,7 +44,7 @@ class UserManagementControllerTest {
 		UserRegistrationForm form = new UserRegistrationForm(new AuthenticatedUser());
 		form.setUsername("Anonymous");
 		form.setEmail("anonymous@sample.co.jp");
-		Mockito.when(service.initializeRegistrationForm(anyLong()))
+		Mockito.when(service.initializeRegistrationForm(anyLong(), user))
 			.thenReturn(form);
 		
 		// Controllerにリクエストを発行

@@ -50,6 +50,49 @@ public class MeetingRoomService {
 		return meetingRoomRepository.findTopic(form.getTopicNo()).orElse(new Topic());
 	}
 
+	/**
+	 * @メソッド説明：		投稿を編集するメソッドを呼び出します。
+	 * 
+	 * @param postText	投稿内容
+	 * @param topicNo	トピック番号
+	 * @param postNo	ポスト番号
+	 * @return			投稿内容変更後の投稿一覧データを検索して返します。
+	 */
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public Topic editPost(String postText, String topicNo, int postNo) {
+		meetingRoomRepository.editerPost(postText, topicNo, postNo);
+		return meetingRoomRepository.findTopic(topicNo).orElse(new Topic());
+	}
+
+	/**
+	 * @メソッド説明：		投稿を削除するメソッドを呼び出します。
+	 * 
+	 * @param postText	投稿内容
+	 * @param topicNo	トピック番号
+	 * @param postNo	ポスト番号
+	 * @return			投稿内容削除後の投稿一覧データを検索して返します。
+	 */
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public Topic deletePost(String topicNo, int postNo) {
+		meetingRoomRepository.deleterPost(topicNo, postNo);
+		return meetingRoomRepository.findTopic(topicNo).orElse(new Topic());
+	}
+	
+	/**
+	 * @メソッド説明：		投稿トピックを削除するメソッドを呼び出します。
+	 * 
+	 * @param topicNo	トピック番号
+	 * @return			投稿トピック削除後の投稿一覧データを検索して返します。
+	 */
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public List<Topic> deleteTopic(String topicNo) {
+		meetingRoomRepository.deleterTopic(topicNo);
+		return meetingRoomRepository.searchAllTopics();
+	}
+	
 	@Transactional(rollbackFor = Throwable.class)
 	@LogRequired
 	public Topic reloadTopic(String topicNo) {

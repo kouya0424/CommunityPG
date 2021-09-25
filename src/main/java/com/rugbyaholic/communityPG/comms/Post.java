@@ -38,7 +38,7 @@ public class Post {
 	}
 
 	public boolean isPostedBy(AuthenticatedUser user) {
-		return Objects.equals(user.getEmpNo(), author.getEmpNo());
+		return Objects.equals(user.getEmpNo(), author.getEmpNo()) || user.getRoles().get(0).getCode().equals("03");
 	}
 
 	public int getPostNo() {

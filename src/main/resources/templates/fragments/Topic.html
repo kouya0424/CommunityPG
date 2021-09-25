@@ -13,17 +13,19 @@
 </head>
 <body>
 	<div th:fragment="topic(topic)" th:remove="tag">
+	<!-- トピック -->
 		<div class="d-flex justify-content-between">
 			<h5 th:text="${topic.subject}">トピックのタイトル</h5>
-			<form th:action="@{/comms/DeleteTopic.do}">
+			<form  id="deleteForm" th:action="@{/comms/deleteTopic.do}" method="post">
 				<input type="hidden" name="topicNo" th:value="${topic.topicNo}" />
 				<div th:if="${topic.isOwnedBy(user)}">
-					<button class="btn btn-link p-0 text-dark fs-5" title="トピック削除">
+					<button id="topoicDelete" class="btn btn-link p-0 text-dark fs-5" title="トピック削除">
 						<i class="bi bi-trash"></i>
 					</button>
 				</div>
 			</form>
 		</div>
+		<!-- 投稿一覧 -->
 		<div class="d-flex border-bottom mt-3" th:each="post : ${topic.posts}">
 			<div class="me-3">
 				<img src="../static/img/anonymous.png" style="width: 64px;"
@@ -41,9 +43,12 @@
 							</button>
 						</div>
 					</div>
-					<textarea class="form-control text-dark readonly p-0" readonly th:text="${post.postText}" name="postText"></textarea>
-					<div class="py-2 text-end d-none" th:if="${post.isPostedBy(user)}" th:id="${topic.topicNo + post.postNo}">
-						<a th:href="@{/comms/EditPost.do}" class="btn btn-success btn-sm shadow-sm">編集</a>
+					<textarea class="form-control text-dark readonly p-0" readonly th:text="${post.postText}" name="postText" id="postText"></textarea>
+					<div class="py-2 d-flex justify-content-end d-none" th:if="${post.isPostedBy(user)}" th:id="${(topic.topicNo) + (post.postNo)}">
+						<button id="textEdit" type="button" class="btn btn-success btn-sm me-2 shadow-sm">編集</button>
+						<div th:if="${topic.posts.size() > 1}">
+							<button id="textDelete" type="button" class="btn btn-secondary btn-sm me-2 shadow-sm">削除</button>
+						</div>
 					</div>
 					<input type="hidden" name="topicNo" th:value="${topic.topicNo}" />
 					<input type="hidden" name="postNo" th:value="${post.postNo}" />
@@ -68,6 +73,7 @@
 							</button>
 							<span th:text="${post.badRatings.size()}">2</span>
 						</div>
+						<!-- 最初の投稿のみ、コメントの数を表示 -->
 						<div class="d-flex align-items-baseline"
 							th:classappend="${post.isFirstPost() ? '' : 'd-none'}">
 							<span class="me-2 text-dark fs-5">
@@ -79,6 +85,7 @@
 				</form>
 			</div>
 		</div>
+		<!-- 新規投稿 -->
 		<div class="d-flex mt-3">
 			<div class="me-3">
 				<img src="../static/img/anonymous.png" style="width: 64px;"

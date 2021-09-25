@@ -133,10 +133,11 @@
 					<span class="fw-bold">ユーザー権限</span>
 				</div>
 				<div class="col col-12 col-md-5">
-					<select name="roles" class="form-select form-select-sm"
+					<select name="roles" id="roles" class="form-select form-select-sm"
 							multiple="multiple" style="width: 12rem;" size="3">
-						<option th:each="option : *{roleOptions}" th:value="${option.code}" th:text="${option.name}"
-								th:field="*{roles}"></option>
+							<option th:each="option : *{roleOptions}" th:value="${option.code}" th:text="${option.name}"
+									th:field="*{roles}">
+							</option>
 					</select>
 				</div>
 				<div class="col col-12 col-md-4">
@@ -147,6 +148,7 @@
 				<input type="hidden" th:field="*{user.email}" />
 				<input type="hidden" th:field="*{user.password}" />
 				<input type="hidden" th:field="*{user.profileImage.fileName}">
+				<input type="hidden" th:field="*{loginUserRoles}">
 			</div>
 			<div class="footer px-3">
 				<button class="btn btn-success btn-sm shadow-sm">
@@ -155,6 +157,17 @@
 			</div>
 		</form>		
 	</div>
+	
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			$(document).ready(function() {
+		    	if($("#loginUserRoles").val() != "03"){
+		    		$('select[name="roles"] option[value="03"]').prop('disabled', true);
+		    	}
+			});
+		/*]]>*/
+	</script>
+	
 	<div th:replace="fragments/Toast :: toast"></div>
 </body>
 </html>

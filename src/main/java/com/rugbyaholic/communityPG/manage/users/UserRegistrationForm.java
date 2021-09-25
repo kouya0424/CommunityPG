@@ -59,6 +59,8 @@ public class UserRegistrationForm {
 	
 	private AuthenticatedUser user;
 	
+	private String loginUserRoles;
+	
 	public UserRegistrationForm() {
 		this(new AuthenticatedUser());
 	}
@@ -197,5 +199,12 @@ public class UserRegistrationForm {
 
 	public void setUser(AuthenticatedUser user) {
 		this.user = user;
+	}
+	public String getLoginUserRoles() {
+		return loginUserRoles;
+	}
+
+	public void setLoginUserRoles(String loginUserRoles) {
+		this.loginUserRoles = loginUserRoles;
 	}
 }

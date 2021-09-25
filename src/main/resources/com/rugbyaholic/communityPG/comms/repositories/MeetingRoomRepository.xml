@@ -3,9 +3,8 @@
     "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.rugbyaholic.communityPG.comms.repositories.MeetingRoomRepository">
-
+<mapper namespace="com.rugbyaholic.communityPG.comms.repositories.MeetingRoomRepository">
+	
 	<select id="currentRating" resultType="int">
 	<![CDATA[
 		SELECT  RATING_FLG
@@ -15,7 +14,7 @@
 		AND     RATEDBY      =  #{user.empNo}
 	]]>
 	</select>
-
+	
 	<insert id="updateRating">
 	<![CDATA[
 		INSERT INTO POST_RATINGS
@@ -36,7 +35,7 @@
 		    RATEDAT          =  CURDATE()
 	]]>
 	</insert>
-
+	
 	<select id="findTopic" resultMap="Topics">
 	<![CDATA[
 		SELECT  TOPICS.TOPICNO              AS topicNo,
@@ -75,7 +74,7 @@
 		        POSTS.POSTNO
 	]]>
 	</select>
-
+	
 	<select id="searchAllTopics" resultMap="Topics">
 	<![CDATA[
 		SELECT  TOPICS.TOPICNO              AS topicNo,
@@ -113,43 +112,35 @@
 		        POSTS.POSTNO
 	]]>
 	</select>
-
-	<resultMap type="com.rugbyaholic.communityPG.comms.Topic"
-		id="Topics">
+	
+	<resultMap type="com.rugbyaholic.communityPG.comms.Topic" id="Topics">
 		<result property="topicNo" column="topicNo" />
 		<result property="subject" column="subject" />
 		<result property="createdAt" column="topicCreatedAt" />
-		<association property="owner"
-			javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+		<association property="owner" javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
 			<result property="empNo" column="topicCreatedBy" />
 		</association>
-		<collection property="posts"
-			ofType="com.rugbyaholic.communityPG.comms.Post">
+		<collection property="posts" ofType="com.rugbyaholic.communityPG.comms.Post">
 			<result property="postNo" column="postNo" />
 			<result property="postText" column="postText" />
 			<result property="postedAt" column="postCreatedAt" />
-			<association property="author"
-				javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+			<association property="author" javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
 				<result property="empNo" column="postCreatedBy" />
 				<result property="username" column="postCreatedUsername" />
-				<association property="profileImage"
-					javaType="com.rugbyaholic.communityPG.common.ImageFile">
-					<result property="encodedString"
-						column="postCreatedUserImage" />
+				<association property="profileImage" javaType="com.rugbyaholic.communityPG.common.ImageFile">
+					<result property="encodedString" column="postCreatedUserImage" />
 				</association>
 			</association>
-			<collection property="ratings"
-				ofType="com.rugbyaholic.communityPG.comms.PostRating">
+			<collection property="ratings" ofType="com.rugbyaholic.communityPG.comms.PostRating">
 				<result property="rating" column="postRating" />
 				<result property="ratedAt" column="postRatedAt" />
-				<association property="rater"
-					javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
+				<association property="rater" javaType="com.rugbyaholic.communityPG.auth.AuthenticatedUser">
 					<result property="empNo" column="postRatedBy" />
 				</association>
 			</collection>
 		</collection>
 	</resultMap>
-
+	
 	<insert id="registerTopic">
 	<![CDATA[
 		INSERT INTO TOPICS(
@@ -165,7 +156,7 @@
 		)
 	]]>
 	</insert>
-
+	
 	<insert id="registerPost">
 	<![CDATA[
 		INSERT INTO POSTS(
@@ -190,6 +181,34 @@
 		    CURDATE()
 		)
 	]]>
+	</insert>
+
+	<insert id="editerPost">
+	<![CDATA[
+		UPDATE POSTS
+		SET		POST		=	#{postText}
+		WHERE 	TOPICNO		=	#{topicNo}
+		AND 	POSTNO 		=	#{postNo}
+	]]>
+	</insert>
+	
+	<insert id="deleterPost">
+	<![CDATA[
+		DELETE
+		FROM		POSTS
+		WHERE		TOPICNO		=	#{topicNo}
+		AND 		POSTNO 		=	#{postNo}
+	]]>
+	</insert>
+	
+	<insert id="deleterTopic">
+	<![CDATA[
+		DELETE		POSTS, TOPICS
+		FROM		POSTS 
+						LEFT JOIN TOPICS 
+							ON POSTS.TOPICNO = TOPICS.TOPICNO
+	    WHERE		TOPICS.TOPICNO = #{topicNo}
+   	]]>
 	</insert>
 
 </mapper>
