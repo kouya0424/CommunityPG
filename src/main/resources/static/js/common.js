@@ -35,6 +35,13 @@ $(function() {
 		$('.cover').toggleClass('visible');
 	});
 
+
+/** 
+	$(document).ready(function() {
+		var file = $('#thumbnail').attr('src');
+		readerOnLoad(file);
+	});
+*/
 	// 画像ファイルのサムネイル取得
 	$(document).on('change', '#photo-file', function() {
 		var file = $(this).prop('files')[0];
@@ -45,14 +52,34 @@ $(function() {
 			alert('画像ファイルを選択してください。');
 			return;
 		}
+		readerOnLoad(file);
+		/*
+		var file = $(this).prop('files')[0];
+		// 画像以外は処理を停止
+		if (!file.type.match('image.*')) {
+			// クリア
+			$(this).val('');
+			alert('画像ファイルを選択してください。');
+			return;
+		}
 
-		// 画像表示
 		var reader = new FileReader();
 		reader.onload = function() {
 			$('#thumbnail').attr('src', reader.result);
 		}
 		reader.readAsDataURL(file);
+		*/
 	});
+
+	// 画像表示
+	function readerOnLoad(file) {
+		var reader = new FileReader();
+		reader.onload = function() {
+			$('#thumbnail').attr('src', reader.result);
+		}
+		reader.readAsDataURL(file);
+	}
+
 
 
 	// ドラッグ＆ドロップイベントをハンドル 

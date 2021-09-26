@@ -23,7 +23,7 @@ public interface UserRepository {
 	public Optional<AuthenticatedUser> identifyUser(String email);
 
 	public Optional<ProfileEditForm> createProfileEditForm(long userId);
-
+	
 	public int changeProfile(AuthenticatedUser user);
 
 	public int updatePersonalInfo(ProfileEditForm profileEditForm);

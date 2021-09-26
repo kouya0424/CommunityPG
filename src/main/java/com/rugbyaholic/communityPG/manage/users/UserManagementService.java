@@ -41,15 +41,15 @@ public class UserManagementService {
 			form.setEmpNo(availYear + nextNo);
 			numberingRepository.next(NumberingRepository.NUMBERING_CODE_EMPNO, availYear, user);
 		}
-		// プロフィール画像の保存
+		
+		// DB登録用の画像ファイル名を生成
 		MultipartFile uploadFile = form.getProfileImage();
+		//　画像を保存
 		if (!uploadFile.isEmpty()) {
 			ImageFile imageFile = new ImageFile();
 			imageFile.encode(uploadFile);
 			form.setImageFile(imageFile);
-		} else {
-			form.setImageFile(form.getUser().getProfileImage());
-		}
+		} 
 		// ユーザ―情報テーブルの更新
 		if (form.getEmail() == null) {
 			form.setEmail(form.getUser().getEmail());
@@ -57,7 +57,18 @@ public class UserManagementService {
 		} else {
 			form.setPassword(passwordEncoder.encode(form.getPassword()));
 		}
+		// 新規登録の場合、画像を初期化
+		if(form.getEmpNo().isEmpty()) {
+			form.setImageFile(form.getUser().getProfileImage());
+		} else {
+			AuthenticatedUser currentUser = userRepository.findUserById(form.getUser().getId()).orElse(new AuthenticatedUser());
+			form.setImageFile(currentUser.getProfileImage());
+		}
+		
 		userRepository.registerUser(form);
+		
+		// ユーザー権限テーブルの更新
+		form.setUser(userRepository.findUserById(form.getUser().getId()).orElse(new AuthenticatedUser()));
 		// ユーザー権限テーブルの更新
 		form.setUser(userRepository.findUserById(form.getUser().getId()).orElse(new AuthenticatedUser()));
 		// 変更前のユーザー権限
