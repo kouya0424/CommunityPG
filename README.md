@@ -1,40 +1,52 @@
 # [CommunityPG](http://aws-and-community-pg.ap-northeast-1.elasticbeanstalk.com/Login.html)
 
-[CommunityPG](http://aws-and-community-pg.ap-northeast-1.elasticbeanstalk.com/Login.html)はポートフォリオとして作成した、社内コミュニケーションサイトです。
+#### "CommunityPG" はポートフォリオとして作成した、社内コミュニケーションサイトです。
+
+## URL
+http://aws-and-community-pg.ap-northeast-1.elasticbeanstalk.com/Login.html/
 <br><br>
 
 # 機能一覧
 ユーザー権限には「**User,Manager,Admin**」の3つが存在し、各画面で利用できる機能を制限しています。<br>
-<br><br>
+<br>
 
 1. ***従業員検索画面***
    1. 全て空白の場合は全件検索を行います。
-      - 入力値がある場合、その値であいまい検索を行います。
-　　    <br><br>![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)<br><br>
+      - 入力値がある場合、その値であいまい検索を行います。<br><br>
+　　 ![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)<br><br>
    2. ユーザーを押下すると、プロフィールが表示されます。
-      - 下記の通り、ログイン中のユーザー権限によって処理を制御。
-        | 権限       | 制限                                                      |
-        |:-----------|:---------------------------------------------------------|
-        | User     　| 自身のプロフィール以外は変更・削除権限なし                   |
-        | Manager    | ユーザーの削除権限あり。自身のプロフィール以外は変更権限なし  |
-        | Admin      | 全ての変更権限があり                                      |
+      - ログイン中のユーザー権限によって処理を制御しています。
+        | 権限        | 変更            | 削除 | 
+        |:-----------:|:---------------:|:--:|
+        | **User**    | 自身の情報のみ〇 | ✕ |
+        | **Manager** | 自身の情報のみ〇 | 〇 |
+        | **Admin**   | 全て〇          | 〇 | 
        ![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)<br><br>
-
-        
-        
-        
+<br>
         
 2. ***電子会議室***
+   1. トピックを作成することができます。
+   2. 作成されたトピックに対して、投稿をする事ができます。
+   3. 投稿に対して、Like・Bad ボタンを押し評価することができます。（※ 1件の投稿に対し、1件まで）
+   4. トピック・投稿を編集することができます。
+      - ログイン中のユーザー権限によって処理を制御しています。
+        | 権限        | 変更            | 削除            | 
+        |:-----------:|:---------------:|:--------------:|
+        | **User**    | 自身の投稿のみ〇 | 自身の投稿のみ〇 |
+        | **Manager** | 自身の投稿のみ〇 | 〇              |
+        | **Admin**   | 全て〇          | 〇              | 
+       ![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)<br><br>
+<br>      
+       
 
-![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)
+3. ***ファイル共有***
+   1. フォルダの作成や削除、ファイル共有などが行えます。
+   2. フォルダ内に入ったり、前のフォルダに戻ったり、ファイルを保存したりできます。<br><br>
+     ![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)<br><br>
+<br><br>
 
-- ファイル共有
-> フォルダの作成や削除、ファイルの共有などが行えます。
-![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)
 
 
-This animation is a "Cat playing on trampoline"!
-You can get basic skills for making physics simulations.
 
 # Features
 
@@ -77,20 +89,10 @@ Run "demo.py"
 python demo.py
 ```
 
-# Note
-
-I don't test environments under Linux and Mac.
-
 # Author
-
-* Hayabusa
-* R&D Center
-* Twitter : https://twitter.com/Cpp_Learning
+* Kouya Ajima
 
 # License
+[MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
-"Physics_Sim_Py" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
-Enjoy making cute physics simulations!
-
-Thank you!
