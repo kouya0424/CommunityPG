@@ -12,7 +12,7 @@ import com.rugbyaholic.communityPG.manage.sys.fs.upload.UploadForm;
 public class DirectoryService {
 	
 	public String homeDirectory() {
-		return "Share";
+		return "./src/main/resources/com/rugbyaholic/communityPG/Share";
 	}
 	
 	public void makeDirectory(String currentDirectory, String folderName) {
