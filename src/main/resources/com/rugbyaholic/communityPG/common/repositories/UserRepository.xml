@@ -339,4 +339,32 @@
 	]]>
 	</insert>
 	
+	<update id="deleterUser">
+	<![CDATA[
+		DELETE
+		        USERS
+		        ,POSTS
+		        ,TOPICS
+		        ,POST_RATINGS
+		        ,PERSONAL_INFO
+		        ,USER_ROLES
+		    FROM
+		        USERS
+		            LEFT JOIN POSTS
+		                ON USERS.EMP_NO		= 	POSTS.CREATEDBY
+		            LEFT JOIN TOPICS
+		                ON USERS.EMP_NO		= 	TOPICS.CREATEDBY
+		            LEFT JOIN POST_RATINGS
+		                ON USERS.EMP_NO		= 	POST_RATINGS.RATEDBY
+		            LEFT JOIN PERSONAL_INFO
+		                ON USERS.ID 		= 	PERSONAL_INFO.USER_ID
+		            LEFT JOIN USER_ROLES
+		                ON USERS.ID 		= 	USER_ROLES.USER_ID
+		    WHERE
+		        USERS.EMP_NO 	= 	#{empNo};
+		    AND
+		        USERS.ID 	= 	#{id};
+  	]]>
+	</update>
+	
 </mapper>

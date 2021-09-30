@@ -16,6 +16,7 @@ var callbackFunction = function(data) {
 }
 
 $(function() {
+	
 	// レイアウト調整	
 	$('textarea.readonly').each(function(index, element) {
 		$(element).height(0).innerHeight(element.scrollHeight);
@@ -23,6 +24,7 @@ $(function() {
 	$(document).on('input', 'textarea', function() {
 		$(this).height(0).innerHeight(this.scrollHeight);
 	})
+	
 	// CollapseのToggler設定
 	$(document).on('click', '*[data-bs-toggle="collapse"]', function(e) {
 		e.preventDefault();
