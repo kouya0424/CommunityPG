@@ -43,13 +43,17 @@ public class UserManagementService {
 		}
 		
 		// ユーザ―情報テーブルの更新
-		if (form.getEmail() == null) {
+		if (form.getEmail() == null || form.getEmail().isBlank()) {
 			form.setEmail(form.getUser().getEmail());
+		}
+		if (form.getPassword() == null || form.getPassword().isBlank()) {
 			form.setPassword(form.getUser().getPassword());
 		} else {
 			form.setPassword(passwordEncoder.encode(form.getPassword()));
 		}
-		
+		if (form.getAvf() == null){
+			form.setAvf(form.getUser().getAvf());
+		}
 		// DB登録用の画像ファイル名を生成
 		MultipartFile uploadFile = form.getProfileImage();
 		//　画像を保存
@@ -138,5 +142,10 @@ public class UserManagementService {
 		updCount += userRepository.grantAuthority(user, "03");
 		if (updCount < 4)
 			throw new Exception();
+	}
+
+	@Transactional(rollbackFor = Throwable.class)
+	public void userDeleteForm(Long id) {
+		userRepository.deleterUser(id);
 	}
 }

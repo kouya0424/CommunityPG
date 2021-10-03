@@ -27,8 +27,6 @@ public interface UserRepository {
 	public int changeProfile(AuthenticatedUser user);
 
 	public int updatePersonalInfo(ProfileEditForm profileEditForm);
-
-	public int deleterUser(String empNo);
 	
 	public List<AuthenticatedUser> loadUserList(UserSearchForm form);
 
@@ -37,5 +35,7 @@ public interface UserRepository {
 	public int registerInitialUser(AuthenticatedUser user);
 
 	public int grantAuthority(@Param("user") AuthenticatedUser user, @Param("role") String userRole);
+	
+	public int deleterUser(Long id);
 
 }

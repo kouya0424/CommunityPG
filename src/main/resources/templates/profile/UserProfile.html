@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/component.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>ユーザ−情報表示画面</title>
+</head>
+<body>
+	<div class="cover"></div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
+	<div class="main">
+		<div th:replace="fragments/Header :: header"></div>
+		<form th:object="${profileEditForm}">
+			<div class="container-fluid p-4 position-relative">
+				<div class="row g-4">
+					<div class="col col-12">
+						<h5 class="m-0 pb-2 mb-3 border-bottom">アカウント情報</h5>
+					</div>
+				</div>
+				<div class="row gy-2 mb-4">
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">社員番号</span>
+					</div>
+					<div class="col col-12 col-md-9">
+						<span th:text="${targetUser.empNo}"></span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">氏名</span>
+					</div>
+					<div class="col col-12 col-md-9">
+						<span th:text="${targetUser.username}"></span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">E-Mail</span>
+					</div>
+					<div class="col col-12 col-md-9">
+						<span th:text="${targetUser.email}">user@sample.co.jp</span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">所属部署</span>
+					</div>
+					<div class="col col-12 col-md-9">
+						<span th:text="${targetUser.deptName}"></span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">役職</span>
+					</div>
+					<div class="col col-12 col-md-9">
+						<span th:text="${targetUser.posName}"></span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">プロフィール画像</span>
+					</div>
+					<div class="col col-12 col-md-9">
+						<div class="p-1 d-inline-block" id="dragandrophandler">
+							<img
+								th:src="${targetUser.profileImage.encodedString}"
+								alt="" class="profile-photo" id="thumbnail" />
+						</div>
+					</div>
+				</div>
+				<div class="row g-3">
+					<div class="col col-12">
+						<h5 class="m-0 pb-2 mb-3 border-bottom">個人情報</h5>
+					</div>
+				</div>
+				<div class="row gy-2 mb-4">
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">郵便番号</span>
+					</div>
+					<div class="col col-12 col-md-8 d-flex">
+						<span th:text="*{zipcode}" class="personal-info">ハイフンなし</span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">住所</span>
+					</div>
+					<div class="col col-12 col-md-8">
+						<span th:text="*{pref}" class="personal-info pref">都道府県</span>
+					</div>
+					<div class="col col-12 col-md-3 isShow-address"></div>
+					<div class="col col-12 col-md-8 isShow-address">
+						<span th:text="*{city}" class="personal-info">市区町村</span>
+					</div>
+					<div class="col col-12 col-md-3 isShow-address"></div>
+					<div class="col col-12 col-md-8 isShow-address">
+						<span th:text="*{bldg}" class="personal-info">番地・建物</span>
+					</div>
+					<div class="col col-12 col-md-3">
+						<span class="fw-bold">電話番号</span>
+					</div>
+					<div class="col col-12 col-md-8 isShow-PhoneNo">
+						<span th:text="*{phoneNo}" class="personal-info PhoneNo">自宅</span>
+					</div>
+					<div class="col col-12 col-md-3 isShow-mobile"></div>
+					<div class="col col-12 col-md-8 isShow-mobilePhoneNo">
+						<span th:text="*{mobilePhoneNo}" class="personal-info PhoneNo">携帯</span>
+					</div>
+				</div>
+				<div class="footer px-3">
+					<input type="hidden" name="roles" th:value="${#authentication.principal.roles.get(0).getCode}" />
+					<input type="hidden" id="loginUserId" th:value="${#authentication.principal.id}" />
+					<input type="hidden" id="userId" th:value="${targetUser.id}" />
+					<a th:href="|@{/manage/users/UserRegistration.html}?id=${targetUser.id}|"
+						 class="btn btn-success btn-sm shadow-sm" id="editProfile">
+						 アカウント情報編集
+					</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:replace="fragments/Toast :: toast"></div>
+</body>
+</html>

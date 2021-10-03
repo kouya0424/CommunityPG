@@ -38,7 +38,7 @@ public class UserManagementController {
 	public String onUserListRequested(Model model) {
 
 		model.addAttribute("userSearchForm", service.initializeSearchForm());
-		return "manage/users/UserList.html";
+		return "redirect:/manage/users/UserSearch.do";
 	}
 
 	@PostMapping("/manage/users/UserRegistration.do")
@@ -63,6 +63,17 @@ public class UserManagementController {
 		}
 	}
 
+	@PostMapping("/manage/users/UserDelete.do")
+	public String onUserDeleteRequested(@ModelAttribute UserRegistrationForm userRegistrationForm, Model model) {
+		
+		try {
+			service.userDeleteForm(userRegistrationForm.getUser().getId());
+		} catch (Exception e) {
+			// TODO エラー画面開発後に実装
+		}
+		return "redirect:/manage/users/UserList.html";
+	}
+	
 	@GetMapping("/manage/users/UserRegistration.html")
 	public String onUserRegistrationRequested(@RequestParam(value = "id", required = false) Long id, Model model,
 			@AuthenticationPrincipal AuthenticatedUser user) {

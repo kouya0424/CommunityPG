@@ -151,21 +151,14 @@
 				<input type="hidden" th:field="*{loginUserRoles}">
 			</div>
 			<div class="footer px-3">
-				<button id= "userDelete" class="btn btn-success btn-sm shadow-sm">ユーザ―削除</button>
-				<button id= "userCreate" class="btn btn-success btn-sm shadow-sm">ユーザ―情報登録</button>
+				<button class="btn btn-success btn-sm shadow-sm">ユーザ―情報登録</button>
+				<button id="userDelete" class="btn btn-link p-0 text-dark fs-5" title="ユーザ―情報削除"
+						data-action="/manage/users/UserDelete.do">
+					<i class="bi bi-trash"></i>
+				</button>
 			</div>
 		</form>		
 	</div>
-	
-	<script type="text/javascript" th:inline="javascript">
-		/*<![CDATA[*/
-			$(document).ready(function() {
-		    	if($("#loginUserRoles").val() != "03"){
-		    		$('select[name="roles"] option[value="03"]').prop('disabled', true);
-		    	}
-			});
-		/*]]>*/
-	</script>
 	
 	<div th:replace="fragments/Toast :: toast"></div>
 </body>

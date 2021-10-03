@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rugbyaholic.communityPG.auth.AuthenticatedUser;
 import com.rugbyaholic.communityPG.common.util.NotificationMessage;
@@ -28,11 +29,21 @@ public class ProfileController {
 
 	@GetMapping("/profile/Profile.html")
 	public String onPageRequested(@AuthenticationPrincipal AuthenticatedUser user, Model model) {
-
-		ProfileEditForm form = profileService.providePersonalInfo(user);
+		
+		ProfileEditForm form = profileService.providePersonalInfo(user.getId());
 		model.addAttribute("profileEditForm", form);
-
 		return "profile/Profile.html";
+	}
+	
+	@GetMapping("/profile/UserProfile.html")
+	public String onProfileRequested(@RequestParam(value = "id", required = false) Long id, Model model,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		
+		AuthenticatedUser targetUser = profileService.provideUserInfo(id);
+		ProfileEditForm form = profileService.providePersonalInfo(id);
+		model.addAttribute("targetUser", targetUser);
+		model.addAttribute("profileEditForm", form);
+		return "profile/UserProfile.html";
 	}
 
 	@PostMapping("/profile/ProfileEdit.do")

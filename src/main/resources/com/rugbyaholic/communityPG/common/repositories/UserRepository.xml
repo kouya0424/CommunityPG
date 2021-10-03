@@ -339,7 +339,7 @@
 	]]>
 	</insert>
 	
-	<update id="deleterUser">
+	<insert id="deleterUser">
 	<![CDATA[
 		DELETE
 		        USERS
@@ -361,10 +361,8 @@
 		            LEFT JOIN USER_ROLES
 		                ON USERS.ID 		= 	USER_ROLES.USER_ID
 		    WHERE
-		        USERS.EMP_NO 	= 	#{empNo};
-		    AND
-		        USERS.ID 	= 	#{id};
+		        USERS.ID 	= 	#{id}
   	]]>
-	</update>
+	</insert>
 	
 </mapper>
